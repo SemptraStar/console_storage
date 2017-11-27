@@ -71,8 +71,14 @@ namespace ConsoleStorage
             {
                 foreach (var product in context.Products.Include(p => p.Unit))
                 {
-                    Console.WriteLine($"{product.Id}. {product.Name}" +
-                        $" - {product.UnitPrice}$ for a {product.Unit.UnitName}");
+                    double productLeftQuantity = context.ProductBatches
+                        .Include(pb => pb.Batch)
+                        .Where(pb => pb.ProductId == product.Id)
+                        .Sum(pb => pb.Quantity * (pb.Batch.IsDelivery ? 1 : -1));
+
+                    Console.WriteLine($"{product.Id}. {product.Name} " +
+                        $"- {product.UnitPrice}$ for a {product.Unit.UnitName}. " +
+                        $"Left on storage: {productLeftQuantity}");
                 }
             }
         }
@@ -286,6 +292,6 @@ namespace ConsoleStorage
                 Console.Write("\nPress any button to continue...");
                 Console.ReadKey();
             }
-        }
+        }    
     }
 }
