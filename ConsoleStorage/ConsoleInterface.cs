@@ -76,6 +76,9 @@ namespace ConsoleStorage
                         .Where(pb => pb.ProductId == product.Id)
                         .Sum(pb => pb.Quantity * (pb.Batch.IsDelivery ? 1 : -1));
 
+                    if (productLeftQuantity <= 0)
+                        continue;
+
                     Console.WriteLine($"{product.Id}. {product.Name} " +
                         $"- {product.UnitPrice}$ for a {product.Unit.UnitName}. " +
                         $"Left on storage: {productLeftQuantity}");
